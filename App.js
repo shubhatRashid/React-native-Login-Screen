@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, ImageBackground, View,Text,TextInput,useWindowDimensions,Pressable,Button} from 'react-native';
+import { StyleSheet, ImageBackground, View,Text,TextInput,useWindowDimensions,Pressable,KeyboardAvoidingView,} from 'react-native';
 import phone from "./assets/background.jpg"
 import { Icon } from '@rneui/themed';
 var height;
@@ -10,6 +10,7 @@ export default function App() {
   const [pass,setPass] = useState('')
   const [conPass,setConPass] = useState('')
   const [tab,setTab] = useState('login')
+  const [error,setError] = useState()
   height = useWindowDimensions().height
   width = useWindowDimensions().width
 
@@ -20,8 +21,8 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-     <ImageBackground source={phone} resizeMode="cover" style={styles.container} >
+    <KeyboardAvoidingView style={styles.container}>
+     <ImageBackground source={phone} resizeMode="cover" style={styles.container} blurRadius={5}>
 
       <View style={styles.tabStyle}>
 
@@ -97,16 +98,19 @@ export default function App() {
             </View>
         </View>
         <Pressable title='Submit' style={styles.buttonStyle} onPress={onClick}>
-              <Icon
-                name='login'
-                color='white' 
-                size= {40}
-              />
+              <Text style={[styles.errorStyle,{display:error?"flex":"none"}]}>{error}</Text>
+              <View style={{display:error?"none":"flex"}}>
+                <Icon
+                  name='login'
+                  color='white' 
+                  size= {40}
+                />
+              </View>
         </Pressable>
       </View>
     </ImageBackground>
 
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -173,5 +177,8 @@ const styles = StyleSheet.create({
     borderRadius:20,
     justifyContent:"center",
     alignItems:"center",
+  },
+  errorStyle:{
+    color:"red"
   }
 });
