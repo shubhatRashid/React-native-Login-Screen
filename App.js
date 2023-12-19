@@ -5,18 +5,44 @@ import { Icon } from '@rneui/themed';
 var height;
 var width;
 export default function App() {
+
   const [email,setEmail] = useState("")
   const [pass,setPass] = useState('')
+  const [conPass,setConPass] = useState('')
+  const [tab,setTab] = useState('login')
   height = useWindowDimensions().height
   width = useWindowDimensions().width
+
   const onClick = () => {
     console.log(email,pass)
     setEmail("")
     setPass("")
   }
+
   return (
     <View style={styles.container}>
-     <ImageBackground source={phone} resizeMode="cover" style={styles.container}>
+     <ImageBackground source={phone} resizeMode="cover" style={styles.container} >
+
+      <View style={styles.tabStyle}>
+
+        <Pressable 
+          style={styles.eachTab} 
+          backgroundColor= {tab === "login"?"teal":'transparent'}
+          onPress={() => setTab('login')}
+        >
+          <Text style={styles.labelStyle}>Login</Text>
+        </Pressable>
+
+        <Pressable 
+          style={styles.eachTab} 
+          backgroundColor= {tab === "signup"?"teal":'transparent'}
+          onPress={() => setTab('signup')}
+        >
+         <Text style={styles.labelStyle}>Sign Up</Text>
+        </Pressable>
+
+      </View>
+
       <View style={styles.formStyle}>
         <View>
             <Text style={styles.labelStyle}>Email</Text>
@@ -52,6 +78,24 @@ export default function App() {
                 />
             </View>
         </View>
+        <View
+            style={{display:tab==="login"?"none":"flex"}}>
+            <Text style={styles.labelStyle}>Confirm Password</Text>
+            <View  style={styles.inputStyle} >
+              <Icon
+                name='lock'
+                color='#00aced' 
+              />
+              <TextInput 
+                placeholder='confirmpassword@123#' 
+                placeholderTextColor="gray"
+                secureTextEntry
+                value={conPass}
+                onChangeText={setConPass}
+                color = "white"
+                />
+            </View>
+        </View>
         <Pressable title='Submit' style={styles.buttonStyle} onPress={onClick}>
               <Icon
                 name='login'
@@ -71,7 +115,8 @@ const styles = StyleSheet.create({
     width:"100%",
     flex: 1,
     justifyContent: 'center',
-    alignItems:'center'
+    alignItems:'center',
+    gap:5
   },
   heading:{
     color:"white",
@@ -82,7 +127,19 @@ const styles = StyleSheet.create({
   tabStyle:{
     flexDirection:"row",
     alignItems:"center",
-    justifyContent:"space-around"
+    justifyContent:"space-around",
+    width:"80%",
+    borderRadius:20,
+    backgroundColor:'rgba(0, 0, 0, 0.8)',
+  },
+  eachTab:{
+    width:"50%",
+    paddingVertical:10,
+    opacity:0.6,
+    padding:8,
+    borderRadius:20,
+    justifyContent:"center",
+    alignItems:"center",
   },
   formStyle:{
     borderWidth:5,
