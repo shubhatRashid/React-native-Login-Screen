@@ -1,27 +1,58 @@
-import { useState } from 'react';
-import { StyleSheet, ImageBackground, View,Text,TextInput,useWindowDimensions,Pressable,KeyboardAvoidingView,} from 'react-native';
+import {useState } from 'react';
+import { StyleSheet, ImageBackground, View,Text,TextInput,Pressable,KeyboardAvoidingView,} from 'react-native';
 import phone from "./assets/background.jpg"
 import { Icon } from '@rneui/themed';
-var height;
-var width;
+
 export default function App() {
 
-  const [email,setEmail] = useState("")
+  const [email,setEmail] = useState('')
   const [pass,setPass] = useState('')
   const [conPass,setConPass] = useState('')
   const [tab,setTab] = useState('login')
-  const [error,setError] = useState()
-  height = useWindowDimensions().height
-  width = useWindowDimensions().width
+  const [error,setError] = useState({})
 
-  const onClick = () => {
-    console.log(email,pass)
-    setEmail("")
-    setPass("")
+  const onChangeEmail = (text) => {
+    setError({})
+    setEmail(text)
+  }  
+
+  const onChangePassword = (text) => {
+    setError({})
+    setPass(text)
+  }  
+
+  const onChangeConPass = (text) => {
+    setError({})
+    setConPass(text)
+  }  
+
+  const validateForm = () => {
+    var error = {}
+    if (!email){
+      error.email = "email required"
+    }
+
+    if (!pass){
+      error.password = "password required"
+    }
+
+    if (tab == 'signup' && !(pass==conPass)){
+      error.conpass = "not matching"
+    }
+    setError(error)
+    return Object.keys(error).length == 0
   }
 
+  const onClick = () => {
+    if (validateForm()){
+      console.log(email,pass,conPass)
+      setEmail("")
+      setPass('')
+      setConPass('')
+    }
+  }
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} >
      <ImageBackground source={phone} resizeMode="cover" style={styles.container} blurRadius={5}>
 
       <View style={styles.tabStyle}>
@@ -57,10 +88,11 @@ export default function App() {
                 placeholderTextColor="gray"
                 textContentType="emailAddress"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={onChangeEmail}
                 color="white"
                 />
             </View>
+            {error.email? <Text style={styles.errorStyle}>{error.email}</Text> : null}
         </View>
         <View>
             <Text style={styles.labelStyle}>Password</Text>
@@ -70,14 +102,16 @@ export default function App() {
                 color='#00aced' 
               />
               <TextInput 
-                placeholder='password@123#' 
+                placeholder='password@123' 
                 placeholderTextColor="gray"
                 secureTextEntry
                 value={pass}
-                onChangeText={setPass}
+                onChangeText={onChangePassword}
                 color = "white"
                 />
             </View>
+            {error.password? <Text style={styles.errorStyle}>{error.password}</Text> : null}
+
         </View>
         <View
             style={{display:tab==="login"?"none":"flex"}}>
@@ -92,17 +126,17 @@ export default function App() {
                 placeholderTextColor="gray"
                 secureTextEntry
                 value={conPass}
-                onChangeText={setConPass}
+                onChangeText={onChangeConPass}
                 color = "white"
                 />
             </View>
+            {error.conpass? <Text style={styles.errorStyle}>{error.conpass}</Text> : null}
         </View>
         <Pressable title='Submit' style={styles.buttonStyle} onPress={onClick}>
-              <Text style={[styles.errorStyle,{display:error?"flex":"none"}]}>{error}</Text>
-              <View style={{display:error?"none":"flex"}}>
+              <View>
                 <Icon
-                  name='login'
-                  color='white' 
+                  name= {Object.keys(error).length > 0 ? "warning" :"login"}
+                  color= {Object.keys(error).length > 0 > 0? "red":'white'} 
                   size= {40}
                 />
               </View>
@@ -179,6 +213,9 @@ const styles = StyleSheet.create({
     alignItems:"center",
   },
   errorStyle:{
-    color:"red"
+    color:"red",
+    fontSize:10,
+    fontFamily:'serif',
+    marginLeft:20
   }
 });
